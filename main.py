@@ -303,6 +303,10 @@ async def forzar_actualizacion():
     await scrape_espn()
     return {"status": "ok", "mensaje": "Actualización completada"}
 
+@app.get("/", response_class=FileResponse)
+def serve_index():
+    return FileResponse("index.html")
+
 # ─── STARTUP ─────────────────────────────────────────────────────────────────
 
 @app.on_event("startup")
