@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URBA Top 14 · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1a5c2a; --verde-claro: #237a38; --verde-oscuro: #0f3a1a;
+    --dorado: #c8a84b; --blanco: #f5f2eb;
+    --gris: #1c1c1c; --gris-medio: #272727; --texto: #f0ece0; --texto-suave: #a8a098;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--gris); color:var(--texto); font-family:'Barlow',sans-serif; font-size:15px; line-height:1.6; overflow-x:hidden; }
+  nav { position:sticky; top:0; z-index:100; background:rgba(10,10,10,.97); border-bottom:2px solid var(--dorado); display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; height:54px; }
+  .nav-logo { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.3rem; letter-spacing:.06em; color:var(--dorado); text-transform:uppercase; }
+  .nav-logo span { color:var(--blanco); }
+  .nav-links { display:flex; gap:1.2rem; list-style:none; }
+  .nav-links a { color:var(--texto-suave); text-decoration:none; font-size:.75rem; font-weight:600; text-transform:uppercase; letter-spacing:.1em; transition:color .2s; }
+  .nav-links a:hover { color:var(--dorado); }
+  .hero { position:relative; background:var(--verde-oscuro); min-height:400px; display:flex; align-items:center; overflow:hidden; }
+  .hero-grid { position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,.025) 59px,rgba(255,255,255,.025) 60px),repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,.025) 59px,rgba(255,255,255,.025) 60px); }
+  .hero-glow { position:absolute; right:-60px; top:-60px; width:480px; height:480px; border-radius:50%; background:radial-gradient(circle,rgba(200,168,75,.18) 0%,transparent 70%); }
+  .hero-content { position:relative; z-index:2; padding:2.5rem 3rem; }
+  .hero-badge { display:inline-block; background:var(--dorado); color:var(--verde-oscuro); font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.68rem; letter-spacing:.15em; text-transform:uppercase; padding:3px 10px; border-radius:2px; margin-bottom:.8rem; }
+  .hero h1 { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(3rem,7vw,5.5rem); line-height:.9; text-transform:uppercase; color:var(--blanco); margin-bottom:.8rem; }
+  .hero h1 em { font-style:normal; color:var(--dorado); display:block; }
+  .hero-sub { font-size:.95rem; color:var(--texto-suave); margin-bottom:1.5rem; max-width:480px; }
+  .hero-stats { display:flex; gap:1.8rem; flex-wrap:wrap; }
+  .hero-stat-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:2rem; color:var(--dorado); line-height:1; display:block; }
+  .hero-stat-label { font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; color:var(--texto-suave); }
+  .campeon-badge { position:absolute; right:3rem; bottom:2rem; text-align:center; background:rgba(30,30,30,.9); border:1px solid var(--dorado); border-radius:8px; padding:1rem 1.4rem; }
+  .campeon-badge .trophy { font-size:1.8rem; margin-bottom:.3rem; }
+  .campeon-badge .c-label { font-size:.62rem; text-transform:uppercase; letter-spacing:.1em; color:var(--texto-suave); display:block; }
+  .campeon-badge .c-name { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.3rem; color:var(--dorado); text-transform:uppercase; }
+  .campeon-badge .c-year { font-size:.72rem; color:var(--texto-suave); }
+  section { padding:2.5rem 2rem; max-width:1200px; margin:0 auto; }
+  .section-title { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.8rem; text-transform:uppercase; letter-spacing:.05em; color:var(--dorado); border-left:4px solid var(--verde-claro); padding-left:1rem; margin-bottom:1.5rem; }
+  hr.div { border:none; border-top:1px solid #2a2a2a; }
+  .tabla-pos { width:100%; border-collapse:collapse; font-size:.88rem; }
+  .tabla-pos thead th { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--texto-suave); padding:.55rem .7rem; text-align:center; background:var(--gris-medio); border-bottom:2px solid var(--dorado); }
+  .tabla-pos thead th:nth-child(2) { text-align:left; }
+  .tabla-pos tbody tr { border-bottom:1px solid rgba(255,255,255,.05); transition:background .15s; }
+  .tabla-pos tbody tr:hover { background:rgba(255,255,255,.04); }
+  .tabla-pos tbody td { padding:.6rem .7rem; text-align:center; }
+  .tabla-pos tbody td:nth-child(2) { text-align:left; }
+  .pos-num { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.05rem; color:var(--texto-suave); }
+  .pos-num.top4 { color:var(--dorado); }
+  .club-name { font-weight:600; font-size:.92rem; }
+  .club-init { display:inline-block; width:30px; height:30px; border-radius:50%; background:var(--verde); border:1.5px solid var(--verde-claro); font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.6rem; color:var(--dorado); text-align:center; line-height:30px; margin-right:.5rem; vertical-align:middle; }
+  .pts-cell { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.15rem; color:var(--dorado); }
+  tr.semifinal { border-left:3px solid var(--dorado); }
+  tr.descenso { border-left:3px solid #c0392b; }
+  .leyenda { display:flex; gap:1.5rem; margin-top:.7rem; font-size:.75rem; color:var(--texto-suave); flex-wrap:wrap; }
+  .leyenda span { display:flex; align-items:center; gap:.4rem; }
+  .dot { width:10px; height:10px; border-radius:2px; }
+  .dot.gold { background:var(--dorado); }
+  .dot.red { background:#c0392b; }
+  .fechas-tabs { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+  .tab-btn { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; padding:.4rem .9rem; border:1px solid rgba(255,255,255,.12); border-radius:4px; background:transparent; color:var(--texto-suave); cursor:pointer; transition:all .2s; }
+  .tab-btn:hover { border-color:var(--dorado); color:var(--dorado); }
+  .tab-btn.active { background:var(--dorado); color:var(--verde-oscuro); border-color:var(--dorado); }
+  .tab-btn.proxima { border-color:var(--verde-claro); color:var(--verde-claro); }
+  .tab-btn.proxima.active { background:var(--verde-claro); color:#fff; }
+  .fecha-panel { display:none; }
+  .fecha-panel.active { display:block; }
+  .fecha-header { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--texto-suave); margin-bottom:.8rem; font-weight:600; padding:.5rem .7rem; background:var(--gris-medio); border-radius:4px; }
+  .partidos-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:.8rem; }
+  .partido-card { background:var(--gris-medio); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:.9rem 1.1rem; transition:border-color .2s; }
+  .partido-card:hover { border-color:rgba(200,168,75,.4); }
+  .partido-card.pendiente { border-color:rgba(35,122,56,.3); }
+  .partido-label { font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--dorado); font-weight:700; margin-bottom:.5rem; }
+  .partido-label.pend { color:var(--verde-claro); }
+  .partido-label.jugado-label { color:var(--dorado); }
+  .partido-equipos { display:flex; align-items:center; justify-content:space-between; gap:.4rem; }
+  .partido-equipo { flex:1; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.93rem; text-transform:uppercase; }
+  .partido-equipo.local { text-align:left; }
+  .partido-equipo.visitante { text-align:right; }
+  .partido-equipo.ganador { color:var(--dorado); }
+  .partido-score { display:flex; gap:3px; align-items:center; background:var(--gris); border-radius:4px; padding:3px 8px; flex-shrink:0; }
+  .partido-score span { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.25rem; min-width:22px; text-align:center; }
+  .partido-score .sep { color:var(--texto-suave); font-size:.85rem; }
+  .score-pend { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.75rem; color:var(--verde-claro); background:rgba(35,122,56,.15); border:1px solid rgba(35,122,56,.4); border-radius:4px; padding:3px 10px; flex-shrink:0; text-transform:uppercase; }
+  .partido-meta { font-size:.7rem; color:var(--texto-suave); margin-top:.4rem; }
+  .bonus-tag { display:inline-block; font-size:.6rem; background:rgba(200,168,75,.1); color:var(--dorado); border:1px solid rgba(200,168,75,.25); border-radius:2px; padding:1px 5px; margin-top:.3rem; font-weight:600; text-transform:uppercase; }
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+  .stats-table { background:var(--gris-medio); border-radius:8px; overflow:hidden; }
+  .stats-header { background:var(--verde); padding:.7rem 1.1rem; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1rem; text-transform:uppercase; letter-spacing:.08em; color:var(--dorado); }
+  .stats-row { display:flex; align-items:center; padding:.5rem 1.1rem; border-bottom:1px solid rgba(255,255,255,.05); gap:.7rem; transition:background .15s; }
+  .stats-row:hover { background:rgba(255,255,255,.04); }
+  .stats-row:last-child { border-bottom:none; }
+  .stats-rank { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.95rem; color:var(--texto-suave); width:20px; text-align:center; flex-shrink:0; }
+  .stats-rank.r1 { color:#ffd700; } .stats-rank.r2 { color:#c0c0c0; } .stats-rank.r3 { color:#cd7f32; }
+  .stats-player { flex:1; min-width:0; }
+  .stats-player-name { font-weight:600; font-size:.87rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .stats-player-club { font-size:.72rem; color:var(--texto-suave); }
+  .stats-bar-bg { flex:0 0 70px; height:4px; background:rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
+  .stats-bar { height:100%; background:var(--verde-claro); border-radius:2px; }
+  .stats-bar.tries { background:var(--dorado); }
+  .stats-value { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.2rem; color:var(--dorado); min-width:36px; text-align:right; }
+  .clubes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:.9rem; }
+  .club-card { background:var(--gris-medio); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:.9rem; display:flex; align-items:center; gap:.7rem; transition:border-color .2s,transform .2s; }
+  .club-card:hover { border-color:var(--verde-claro); transform:translateY(-2px); }
+  .club-avatar { width:40px; height:40px; border-radius:50%; background:var(--verde); border:2px solid var(--verde-claro); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:.65rem; color:var(--dorado); text-align:center; }
+  .club-card-name { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.93rem; text-transform:uppercase; color:var(--blanco); }
+  .club-card-loc { font-size:.72rem; color:var(--texto-suave); }
+  .club-card.nuevo { border-color:rgba(200,168,75,.25); }
+  .nuevo-tag { display:inline-block; font-size:.58rem; background:rgba(200,168,75,.1); color:var(--dorado); border:1px solid rgba(200,168,75,.25); border-radius:2px; padding:1px 5px; font-weight:700; text-transform:uppercase; margin-top:2px; }
+  .urba-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+  .info-card { background:var(--gris-medio); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:1.4rem; }
+  .info-card h3 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.1rem; text-transform:uppercase; color:var(--dorado); margin-bottom:.9rem; }
+  .info-card p { color:var(--texto-suave); font-size:.88rem; line-height:1.7; margin-bottom:.7rem; }
+  .info-row { display:flex; justify-content:space-between; padding:.45rem 0; border-bottom:1px solid rgba(255,255,255,.05); font-size:.86rem; }
+  .info-row:last-child { border-bottom:none; }
+  .info-label { color:var(--texto-suave); }
+  .info-value { font-weight:600; color:var(--blanco); text-align:right; }
+  footer { background:var(--gris-medio); border-top:2px solid var(--dorado); padding:1.8rem 2rem; text-align:center; }
+  .footer-logo { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.5rem; color:var(--dorado); text-transform:uppercase; }
+  .footer-logo span { color:var(--blanco); }
+  footer p { font-size:.78rem; color:var(--texto-suave); margin-top:.4rem; }
+  .fade-in { opacity:0; transform:translateY(18px); transition:opacity .5s,transform .5s; }
+  .fade-in.visible { opacity:1; transform:none; }
+  @media(max-width:700px) {
+    .nav-links,.campeon-badge { display:none; }
+    .hero-content { padding:2rem 1.5rem; }
+    section { padding:2rem 1rem; }
+    .stats-grid,.urba-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">URBA <span>Top 14</span></div>
+  <span id="api-status" style="font-size:.65rem;color:#a8a098;letter-spacing:.05em;"></span>
+  <ul class="nav-links">
+    <li><a href="#posiciones">Posiciones</a></li>
+    <li><a href="#fechas">Fechas</a></li>
+    <li><a href="#goleadores">Goleadores</a></li>
+    <li><a href="#trymans">Trymans</a></li>
+    <li><a href="#clubes">Clubes</a></li>
+    <li><a href="#urba">URBA</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Temporada 2026 · Copa Macro · Presentada por Zurich</div>
+    <h1>URBA<em>Top 14</em></h1>
+    <p class="hero-sub">El torneo de rugby más antiguo de América. 14 clubes, todo el rugby de Buenos Aires. 127ª edición.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-num">14</span><span class="hero-stat-label">Equipos</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">7/26</span><span class="hero-stat-label">Fechas jugadas</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">127°</span><span class="hero-stat-label">Edición</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">1899</span><span class="hero-stat-label">Fundación</span></div>
+    </div>
+  </div>
+  <div class="campeon-badge">
+    <div class="trophy">🏆</div>
+    <span class="c-label">Campeón 2025</span>
+    <div class="c-name">Newman</div>
+    <div class="c-year">Primer título histórico</div>
+  </div>
+</div>
+
+<hr class="div">
+<section id="posiciones" class="fade-in">
+  <div class="section-title">Tabla de Posiciones</div>
+  <div style="overflow-x:auto">
+  <table class="tabla-pos">
+    <thead><tr><th>#</th><th style="text-align:left">Club</th><th title="Jugados">PJ</th><th title="Ganados">PG</th><th title="Empatados">PE</th><th title="Perdidos">PP</th><th title="Puntos Favor">PF</th><th title="Puntos Contra">PC</th><th title="Diferencia">DIF</th><th title="Bonus Ofensivo">BO</th><th title="Bonus Defensivo">BD</th><th>Pts</th></tr></thead>
+    <tbody>
+      <tr class="semifinal"><td><span class="pos-num top4">1</span></td><td><span class="club-init">CAS</span><span class="club-name">CASI</span></td><td>7</td><td>6</td><td>0</td><td>1</td><td>246</td><td>144</td><td>+102</td><td>3</td><td>1</td><td class="pts-cell">28</td></tr>
+      <tr class="semifinal"><td><span class="pos-num top4">2</span></td><td><span class="club-init">HIN</span><span class="club-name">Hindú Club</span></td><td>7</td><td>6</td><td>0</td><td>1</td><td>240</td><td>157</td><td>+83</td><td>3</td><td>1</td><td class="pts-cell">28</td></tr>
+      <tr class="semifinal"><td><span class="pos-num top4">3</span></td><td><span class="club-init">SIC</span><span class="club-name">San Isidro Club</span></td><td>7</td><td>6</td><td>0</td><td>1</td><td>246</td><td>141</td><td>+105</td><td>2</td><td>1</td><td class="pts-cell">27</td></tr>
+      <tr class="semifinal"><td><span class="pos-num top4">4</span></td><td><span class="club-init">NEW</span><span class="club-name">Newman 🏆</span></td><td>7</td><td>6</td><td>0</td><td>1</td><td>231</td><td>156</td><td>+75</td><td>3</td><td>0</td><td class="pts-cell">27</td></tr>
+      <tr><td><span class="pos-num">5</span></td><td><span class="club-init">REG</span><span class="club-name">Regatas BV</span></td><td>7</td><td>4</td><td>0</td><td>3</td><td>159</td><td>161</td><td>-2</td><td>2</td><td>2</td><td class="pts-cell">20</td></tr>
+      <tr><td><span class="pos-num">6</span></td><td><span class="club-init">ALU</span><span class="club-name">Alumni</span></td><td>7</td><td>3</td><td>0</td><td>4</td><td>215</td><td>161</td><td>+54</td><td>1</td><td>3</td><td class="pts-cell">16</td></tr>
+      <tr><td><span class="pos-num">7</span></td><td><span class="club-init">ARO</span><span class="club-name">Atl. del Rosario</span></td><td>7</td><td>3</td><td>0</td><td>4</td><td>216</td><td>213</td><td>+3</td><td>1</td><td>2</td><td class="pts-cell">15</td></tr>
+      <tr><td><span class="pos-num">8</span></td><td><span class="club-init">CUB</span><span class="club-name">CUBA</span></td><td>7</td><td>2</td><td>0</td><td>5</td><td>227</td><td>210</td><td>+17</td><td>1</td><td>5</td><td class="pts-cell">14</td></tr>
+      <tr><td><span class="pos-num">9</span></td><td><span class="club-init">MAT</span><span class="club-name">Los Matreros</span></td><td>7</td><td>3</td><td>0</td><td>4</td><td>170</td><td>222</td><td>-52</td><td>0</td><td>1</td><td class="pts-cell">13</td></tr>
+      <tr><td><span class="pos-num">10</span></td><td><span class="club-init">CHA</span><span class="club-name">Champagnat</span></td><td>7</td><td>3</td><td>0</td><td>4</td><td>110</td><td>246</td><td>-136</td><td>0</td><td>0</td><td class="pts-cell">12</td></tr>
+      <tr><td><span class="pos-num">11</span></td><td><span class="club-init">TIL</span><span class="club-name">Los Tilos</span></td><td>7</td><td>2</td><td>0</td><td>5</td><td>183</td><td>231</td><td>-48</td><td>0</td><td>2</td><td class="pts-cell">10</td></tr>
+      <tr><td><span class="pos-num">12</span></td><td><span class="club-init">BEL</span><span class="club-name">Belgrano AC</span></td><td>7</td><td>2</td><td>0</td><td>5</td><td>153</td><td>218</td><td>-65</td><td>0</td><td>2</td><td class="pts-cell">10</td></tr>
+      <tr class="descenso"><td><span class="pos-num">13</span></td><td><span class="club-init">BUE</span><span class="club-name">Buenos Aires C&RC</span></td><td>7</td><td>2</td><td>0</td><td>5</td><td>124</td><td>207</td><td>-83</td><td>0</td><td>2</td><td class="pts-cell">10</td></tr>
+      <tr class="descenso"><td><span class="pos-num">14</span></td><td><span class="club-init">LAP</span><span class="club-name">La Plata RC</span></td><td>7</td><td>1</td><td>0</td><td>6</td><td>163</td><td>216</td><td>-53</td><td>0</td><td>4</td><td class="pts-cell">8</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="leyenda">
+    <span><span class="dot gold"></span>Zona semifinal (top 4)</span>
+    <span><span class="dot red"></span>Zona de descenso</span>
+    <span>BO = Bonus ofensivo · BD = Bonus defensivo · DIF = Diferencia de puntos</span>
+  </div>
+</section>
+
+<hr class="div">
+<section id="fechas" class="fade-in">
+  <div class="section-title">Todas las Fechas</div>
+  <div class="fechas-tabs">
+    <button class="tab-btn active" onclick="showTab(0)">F1 · 14 Mar</button>
+    <button class="tab-btn" onclick="showTab(1)">F2 · 21 Mar</button>
+    <button class="tab-btn" onclick="showTab(2)">F3 · 28 Mar</button>
+    <button class="tab-btn" onclick="showTab(3)">F4 · 11 Abr</button>
+    <button class="tab-btn" onclick="showTab(4)">F5 · 18 Abr</button>
+    <button class="tab-btn" onclick="showTab(5)">F6 · 25 Abr</button>
+    <button class="tab-btn" onclick="showTab(6)">F7 · 9 May</button>
+    <button class="tab-btn proxima" onclick="showTab(7)">F8 · 16 May ▶</button>
+    <button class="tab-btn proxima" onclick="showTab(8)">F9 · 23 May</button>
+    <button class="tab-btn proxima" onclick="showTab(9)">F10 · 30 May</button>
+    <button class="tab-btn proxima" onclick="showTab(10)">F11 · 6 Jun</button>
+    <button class="tab-btn proxima" onclick="showTab(11)">F12 · 20 Jun</button>
+    <button class="tab-btn proxima" onclick="showTab(12)">F13 · 27 Jun</button>
+    <button class="tab-btn proxima" onclick="showTab(13)">F14 · 4 Jul</button>
+    <button class="tab-btn proxima" onclick="showTab(14)">F15 · 11 Jul</button>
+    <button class="tab-btn proxima" onclick="showTab(15)">F16 · 18 Jul</button>
+    <button class="tab-btn proxima" onclick="showTab(16)">F17 · 1 Ago</button>
+    <button class="tab-btn proxima" onclick="showTab(17)">F18 · 15 Ago</button>
+    <button class="tab-btn proxima" onclick="showTab(18)">F19 · 22 Ago</button>
+    <button class="tab-btn proxima" onclick="showTab(19)">F20 · 29 Ago</button>
+    <button class="tab-btn proxima" onclick="showTab(20)">F21 · 5 Sep</button>
+    <button class="tab-btn proxima" onclick="showTab(21)">F22 · 12 Sep</button>
+    <button class="tab-btn proxima" onclick="showTab(22)">F23 · 26 Sep</button>
+    <button class="tab-btn proxima" onclick="showTab(23)">F24 · 3 Oct</button>
+    <button class="tab-btn proxima" onclick="showTab(24)">F25 · 10 Oct</button>
+    <button class="tab-btn proxima" onclick="showTab(25)">F26 · 17 Oct</button>
+  </div>
+
+  <div class="fecha-panel active" id="panel0">
+    <div class="fecha-header">Fecha 1 · 14 de Marzo 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">La Plata vs Atl. del Rosario</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card"><div class="partido-label">Hindú vs Los Tilos</div><div class="partido-equipos"><div class="partido-equipo local ganador">Hindú</div><div class="partido-score"><span>52</span><span class="sep">–</span><span>18</span></div><div class="partido-equipo visitante">Los Tilos</div></div><span class="bonus-tag">B. Ofensivo Hindú</span></div>
+      <div class="partido-card"><div class="partido-label">Champagnat vs CASI</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="partido-score"><span>16</span><span class="sep">–</span><span>40</span></div><div class="partido-equipo visitante ganador">CASI</div></div><span class="bonus-tag">B. Ofensivo CASI</span></div>
+      <div class="partido-card"><div class="partido-label">Alumni vs CUBA</div><div class="partido-equipos"><div class="partido-equipo local ganador">Alumni</div><div class="partido-score"><span>27</span><span class="sep">–</span><span>25</span></div><div class="partido-equipo visitante">CUBA</div></div><div class="partido-meta">Try de Wagener en tiempo cumplido</div><span class="bonus-tag">B. Defensivo CUBA</span></div>
+      <div class="partido-card"><div class="partido-label">Newman vs Buenos Aires C&RC</div><div class="partido-equipos"><div class="partido-equipo local ganador">Newman</div><div class="partido-score"><span>31</span><span class="sep">–</span><span>3</span></div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div><span class="bonus-tag">B. Ofensivo Newman</span></div>
+      <div class="partido-card"><div class="partido-label">SIC vs Belgrano Athletic</div><div class="partido-equipos"><div class="partido-equipo local ganador">SIC</div><div class="partido-score"><span>58</span><span class="sep">–</span><span>18</span></div><div class="partido-equipo visitante">Belgrano</div></div><span class="bonus-tag">B. Ofensivo SIC</span></div>
+      <div class="partido-card"><div class="partido-label">Los Matreros vs Regatas Bella Vista</div><div class="partido-equipos"><div class="partido-equipo local ganador">Los Matreros</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante">Regatas</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel1">
+    <div class="fecha-header">Fecha 2 · 21 de Marzo 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">Belgrano Athletic vs Newman</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano</div><div class="partido-score"><span>25</span><span class="sep">–</span><span>33</span></div><div class="partido-equipo visitante ganador">Newman</div></div></div>
+      <div class="partido-card"><div class="partido-label">Buenos Aires C&RC vs Alumni</div><div class="partido-equipos"><div class="partido-equipo local ganador">Buenos Aires</div><div class="partido-score"><span>20</span><span class="sep">–</span><span>15</span></div><div class="partido-equipo visitante">Alumni</div></div><span class="bonus-tag">B. Defensivo Alumni</span></div>
+      <div class="partido-card"><div class="partido-label">CUBA vs Champagnat</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="partido-score"><span>25</span><span class="sep">–</span><span>29</span></div><div class="partido-equipo visitante ganador">Champagnat</div></div><div class="partido-meta">1er triunfo de Champagnat allí en 20 años</div><span class="bonus-tag">B. Defensivo CUBA</span></div>
+      <div class="partido-card"><div class="partido-label">CASI vs Hindú</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="partido-score"><span>12</span><span class="sep">–</span><span>15</span></div><div class="partido-equipo visitante ganador">Hindú</div></div><div class="partido-meta">Fernández Miranda sella en la última jugada</div><span class="bonus-tag">B. Defensivo CASI</span></div>
+      <div class="partido-card"><div class="partido-label">Los Tilos vs La Plata</div><div class="partido-equipos"><div class="partido-equipo local ganador">Los Tilos</div><div class="partido-score"><span>17</span><span class="sep">–</span><span>13</span></div><div class="partido-equipo visitante">La Plata</div></div><span class="bonus-tag">B. Defensivo La Plata</span></div>
+      <div class="partido-card"><div class="partido-label">Atl. del Rosario vs Regatas Bella Vista</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="partido-score"><span>12</span><span class="sep">–</span><span>20</span></div><div class="partido-equipo visitante ganador">Regatas</div></div></div>
+      <div class="partido-card"><div class="partido-label">SIC vs Los Matreros</div><div class="partido-equipos"><div class="partido-equipo local ganador">SIC</div><div class="partido-score"><span>25</span><span class="sep">–</span><span>20</span></div><div class="partido-equipo visitante">Los Matreros</div></div><span class="bonus-tag">B. Defensivo Los Matreros</span></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel2">
+    <div class="fecha-header">Fecha 3 · 28 de Marzo 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">Regatas Bella Vista vs Los Tilos</div><div class="partido-equipos"><div class="partido-equipo local ganador">Regatas</div><div class="partido-score"><span>29</span><span class="sep">–</span><span>20</span></div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card"><div class="partido-label">La Plata vs CASI</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="partido-score"><span>13</span><span class="sep">–</span><span>39</span></div><div class="partido-equipo visitante ganador">CASI</div></div><span class="bonus-tag">B. Ofensivo CASI</span></div>
+      <div class="partido-card"><div class="partido-label">Hindú vs CUBA</div><div class="partido-equipos"><div class="partido-equipo local ganador">Hindú</div><div class="partido-score"><span>43</span><span class="sep">–</span><span>36</span></div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card"><div class="partido-label">Champagnat vs Buenos Aires C&RC</div><div class="partido-equipos"><div class="partido-equipo local ganador">Champagnat</div><div class="partido-score"><span>13</span><span class="sep">–</span><span>10</span></div><div class="partido-equipo visitante">Buenos Aires</div></div></div>
+      <div class="partido-card"><div class="partido-label">Alumni vs Belgrano Athletic</div><div class="partido-equipos"><div class="partido-equipo local ganador">Alumni</div><div class="partido-score"><span>26</span><span class="sep">–</span><span>21</span></div><div class="partido-equipo visitante">Belgrano</div></div></div>
+      <div class="partido-card"><div class="partido-label">Newman vs SIC</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="partido-score"><span>10</span><span class="sep">–</span><span>37</span></div><div class="partido-equipo visitante ganador">SIC</div></div><div class="partido-meta">Primera derrota del campeón</div><span class="bonus-tag">B. Ofensivo SIC</span></div>
+      <div class="partido-card"><div class="partido-label">Los Matreros vs Atl. del Rosario</div><div class="partido-equipos"><div class="partido-equipo local ganador">Los Matreros</div><div class="partido-score"><span>25</span><span class="sep">–</span><span>22</span></div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel3">
+    <div class="fecha-header">Fecha 4 · 11 de Abril 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">SIC vs Alumni</div><div class="partido-equipos"><div class="partido-equipo local ganador">SIC</div><div class="partido-score"><span>33</span><span class="sep">–</span><span>23</span></div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card"><div class="partido-label">Belgrano Athletic vs Buenos Aires C&RC</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante">Buenos Aires</div></div></div>
+      <div class="partido-card"><div class="partido-label">Buenos Aires C&RC vs Hindú</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires</div><div class="partido-score"><span>12</span><span class="sep">–</span><span>32</span></div><div class="partido-equipo visitante ganador">Hindú</div></div></div>
+      <div class="partido-card"><div class="partido-label">CUBA vs La Plata</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="partido-score"><span>33</span><span class="sep">–</span><span>35</span></div><div class="partido-equipo visitante ganador">La Plata</div></div><span class="bonus-tag">B. Defensivo CUBA</span></div>
+      <div class="partido-card"><div class="partido-label">CASI vs Regatas Bella Vista</div><div class="partido-equipos"><div class="partido-equipo local ganador">CASI</div><div class="partido-score"><span>38</span><span class="sep">–</span><span>14</span></div><div class="partido-equipo visitante">Regatas</div></div><span class="bonus-tag">B. Ofensivo CASI</span></div>
+      <div class="partido-card"><div class="partido-label">Los Tilos vs Atl. del Rosario</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="partido-score"><span>32</span><span class="sep">–</span><span>39</span></div><div class="partido-equipo visitante ganador">Atl. del Rosario</div></div><span class="bonus-tag">B. Defensivo Los Tilos</span></div>
+      <div class="partido-card"><div class="partido-label">Newman vs Los Matreros</div><div class="partido-equipos"><div class="partido-equipo local ganador">Newman</div><div class="partido-score"><span>52</span><span class="sep">–</span><span>28</span></div><div class="partido-equipo visitante">Los Matreros</div></div><span class="bonus-tag">B. Ofensivo Newman</span></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel4">
+    <div class="fecha-header">Fecha 5 · 18 de Abril 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">Atl. del Rosario vs CASI</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="partido-score"><span>28</span><span class="sep">–</span><span>36</span></div><div class="partido-equipo visitante ganador">CASI</div></div></div>
+      <div class="partido-card"><div class="partido-label">Regatas Bella Vista vs CUBA</div><div class="partido-equipos"><div class="partido-equipo local ganador">Regatas</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card"><div class="partido-label">La Plata vs Buenos Aires C&RC</div><div class="partido-equipos"><div class="partido-equipo local ganador">La Plata</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante">Buenos Aires</div></div></div>
+      <div class="partido-card"><div class="partido-label">Hindú vs Belgrano Athletic</div><div class="partido-equipos"><div class="partido-equipo local ganador">Hindú</div><div class="partido-score"><span>39</span><span class="sep">–</span><span>22</span></div><div class="partido-equipo visitante">Belgrano</div></div><span class="bonus-tag">B. Ofensivo Hindú</span></div>
+      <div class="partido-card"><div class="partido-label">Champagnat vs Newman</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante ganador">Newman</div></div></div>
+      <div class="partido-card"><div class="partido-label">Alumni vs Newman</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="partido-score"><span>30</span><span class="sep">–</span><span>32</span></div><div class="partido-equipo visitante ganador">Newman</div></div><div class="partido-meta">Newman remontó en el 2T</div></div>
+      <div class="partido-card"><div class="partido-label">Los Matreros vs Los Tilos</div><div class="partido-equipos"><div class="partido-equipo local ganador">Los Matreros</div><div class="partido-score"><span>—</span><span class="sep">–</span><span>—</span></div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel5">
+    <div class="fecha-header">Fecha 6 · 25 de Abril 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">Newman vs Champagnat</div><div class="partido-equipos"><div class="partido-equipo local ganador">Newman</div><div class="partido-score"><span>47</span><span class="sep">–</span><span>8</span></div><div class="partido-equipo visitante">Champagnat</div></div><div class="partido-meta">Gutiérrez Taboada: 22 puntos</div><span class="bonus-tag">B. Ofensivo Newman</span></div>
+      <div class="partido-card"><div class="partido-label">⭐ SIC vs Hindú</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="partido-score"><span>31</span><span class="sep">–</span><span>32</span></div><div class="partido-equipo visitante ganador">Hindú</div></div><div class="partido-meta">Try de S. Amaya en la última jugada · Duelo de invictos</div></div>
+      <div class="partido-card"><div class="partido-label">Belgrano Athletic vs La Plata</div><div class="partido-equipos"><div class="partido-equipo local ganador">Belgrano</div><div class="partido-score"><span>28</span><span class="sep">–</span><span>19</span></div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card"><div class="partido-label">Buenos Aires C&RC vs Regatas Bella Vista</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires</div><div class="partido-score"><span>26</span><span class="sep">–</span><span>32</span></div><div class="partido-equipo visitante ganador">Regatas</div></div><span class="bonus-tag">B. Defensivo Buenos Aires</span></div>
+      <div class="partido-card"><div class="partido-label">CASI vs Los Tilos</div><div class="partido-equipos"><div class="partido-equipo local ganador">CASI</div><div class="partido-score"><span>33</span><span class="sep">–</span><span>31</span></div><div class="partido-equipo visitante">Los Tilos</div></div><div class="partido-meta">Akemeier define de penal al final</div><span class="bonus-tag">B. Defensivo Los Tilos</span></div>
+      <div class="partido-card"><div class="partido-label">CUBA vs Atl. del Rosario</div><div class="partido-equipos"><div class="partido-equipo local ganador">CUBA</div><div class="partido-score"><span>41</span><span class="sep">–</span><span>17</span></div><div class="partido-equipo visitante">Atl. del Rosario</div></div><span class="bonus-tag">B. Ofensivo CUBA</span></div>
+      <div class="partido-card"><div class="partido-label">Alumni vs Los Matreros</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="partido-score"><span>18</span><span class="sep">–</span><span>23</span></div><div class="partido-equipo visitante ganador">Los Matreros</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel6">
+    <div class="fecha-header">Fecha 7 · 9 de Mayo 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card"><div class="partido-label">Los Tilos vs CUBA</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="partido-score"><span>33</span><span class="sep">–</span><span>42</span></div><div class="partido-equipo visitante ganador">CUBA</div></div><span class="bonus-tag">B. Ofensivo CUBA</span></div>
+      <div class="partido-card"><div class="partido-label">Atl. del Rosario vs Buenos Aires C&RC</div><div class="partido-equipos"><div class="partido-equipo local ganador">Atl. del Rosario</div><div class="partido-score"><span>59</span><span class="sep">–</span><span>28</span></div><div class="partido-equipo visitante">Buenos Aires</div></div><span class="bonus-tag">B. Ofensivo Rosario</span></div>
+      <div class="partido-card"><div class="partido-label">Regatas vs Belgrano Athletic</div><div class="partido-equipos"><div class="partido-equipo local">Regatas</div><div class="partido-score"><span>13</span><span class="sep">–</span><span>15</span></div><div class="partido-equipo visitante ganador">Belgrano</div></div></div>
+      <div class="partido-card"><div class="partido-label">La Plata vs SIC</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="partido-score"><span>31</span><span class="sep">–</span><span>38</span></div><div class="partido-equipo visitante ganador">SIC</div></div></div>
+      <div class="partido-card"><div class="partido-label">⭐ Hindú vs Newman</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="partido-score"><span>25</span><span class="sep">–</span><span>26</span></div><div class="partido-equipo visitante ganador">Newman</div></div><div class="partido-meta">Penal polémico de Gutiérrez Taboada en tiempo cumplido</div></div>
+      <div class="partido-card"><div class="partido-label">Champagnat vs Alumni</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="partido-score"><span>7</span><span class="sep">–</span><span>76</span></div><div class="partido-equipo visitante ganador">Alumni</div></div><div class="partido-meta">¡12 tries de Alumni! Goleada histórica</div><span class="bonus-tag">B. Ofensivo Alumni</span></div>
+      <div class="partido-card"><div class="partido-label">Los Matreros vs CASI</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="partido-score"><span>24</span><span class="sep">–</span><span>48</span></div><div class="partido-equipo visitante ganador">CASI</div></div><div class="partido-meta">Torres Obeid: doblete</div><span class="bonus-tag">B. Ofensivo CASI</span></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel7">
+    <div class="fecha-header">Fecha 8 · 16 de Mayo 2026 · 15:30 hs · PRÓXIMA FECHA</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">⭐ Partido del día</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">⭐ Partido del día</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Próximo</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Próximo</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Próximo</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Próximo</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel8">
+    <div class="fecha-header">Fecha 9 · 23 de Mayo 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel9">
+    <div class="fecha-header">Fecha 10 · 30 de Mayo 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel10">
+    <div class="fecha-header">Fecha 11 · 6 de Junio 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel11">
+    <div class="fecha-header">Fecha 12 · 20 de Junio 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel12">
+    <div class="fecha-header">Fecha 13 · 27 de Junio 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel13">
+    <div class="fecha-header">Fecha 14 · 4 de Julio 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel14">
+    <div class="fecha-header">Fecha 15 · 11 de Julio 2026 · 14:00 hs ⚠️ Juega Pumas en el Interior</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel15">
+    <div class="fecha-header">Fecha 16 · 18 de Julio 2026 · 14:00 hs ⚠️ Juega Pumas en el Interior</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel16">
+    <div class="fecha-header">Fecha 17 · 1 de Agosto 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel17">
+    <div class="fecha-header">Fecha 18 · 15 de Agosto 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel18">
+    <div class="fecha-header">Fecha 19 · 22 de Agosto 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel19">
+    <div class="fecha-header">Fecha 20 · 29 de Agosto 2026 · 14:00 hs ⚠️ Juega Pumas en el Interior</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel20">
+    <div class="fecha-header">Fecha 21 · 5 de Septiembre 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel21">
+    <div class="fecha-header">Fecha 22 · 12 de Septiembre 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel22">
+    <div class="fecha-header">Fecha 23 · 26 de Septiembre 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel23">
+    <div class="fecha-header">Fecha 24 · 3 de Octubre 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel24">
+    <div class="fecha-header">Fecha 25 · 10 de Octubre 2026 · 15:30 hs</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Matreros</div><div class="score-pend">vs</div><div class="partido-equipo visitante">La Plata</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Regatas Bella Vista</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Hindú</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Atl. del Rosario</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Champagnat</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Los Tilos</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Alumni</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CUBA</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Newman</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Buenos Aires C&RC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">SIC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">CASI</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Belgrano Athletic</div></div></div>
+    </div>
+  </div>
+
+  <div class="fecha-panel" id="panel25">
+    <div class="fecha-header">Fecha 26 · 17 de Octubre 2026 · 15:30 hs · ÚLTIMA FECHA DE LA FASE REGULAR</div>
+    <div class="partidos-grid">
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Belgrano Athletic</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Matreros</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">SIC</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Buenos Aires C&RC</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Newman</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CUBA</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Alumni</div><div class="score-pend">vs</div><div class="partido-equipo visitante">CASI</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Champagnat</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Los Tilos</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">Hindú</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Atl. del Rosario</div></div></div>
+      <div class="partido-card pendiente"><div class="partido-label pend">Pendiente</div><div class="partido-equipos"><div class="partido-equipo local">La Plata</div><div class="score-pend">vs</div><div class="partido-equipo visitante">Regatas Bella Vista</div></div></div>
+    </div>
+  </div>
+
+
+</section>
+
+<hr class="div">
+<section id="goleadores" class="fade-in">
+  <div class="section-title">Tabla de Goleadores</div>
+  <div class="stats-table">
+    <div class="stats-header">🥇 Puntos acumulados · Fuente: Rugby Champagne</div>
+    <div class="stats-row"><div class="stats-rank r1">1</div><div class="stats-player"><div class="stats-player-name">Manuel Nogués</div><div class="stats-player-club">Atlético del Rosario</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:100%"></div></div><div class="stats-value">101</div></div>
+    <div class="stats-row"><div class="stats-rank r2">2</div><div class="stats-player"><div class="stats-player-name">Juan Akemeier</div><div class="stats-player-club">CASI</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:98%"></div></div><div class="stats-value">99</div></div>
+    <div class="stats-row"><div class="stats-rank r3">3</div><div class="stats-player"><div class="stats-player-name">Rafael Benedit</div><div class="stats-player-club">CUBA</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:96%"></div></div><div class="stats-value">97</div></div>
+    <div class="stats-row"><div class="stats-rank">4</div><div class="stats-player"><div class="stats-player-name">Gonzalo Gutiérrez Taboada</div><div class="stats-player-club">Newman</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:95%"></div></div><div class="stats-value">96</div></div>
+    <div class="stats-row"><div class="stats-rank">5</div><div class="stats-player"><div class="stats-player-name">Agustín Sascaro</div><div class="stats-player-club">San Isidro Club</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:88%"></div></div><div class="stats-value">89</div></div>
+    <div class="stats-row"><div class="stats-rank">6</div><div class="stats-player"><div class="stats-player-name">Fermín Ormaechea</div><div class="stats-player-club">Hindú Club</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:87%"></div></div><div class="stats-value">88</div></div>
+    <div class="stats-row"><div class="stats-rank">7</div><div class="stats-player"><div class="stats-player-name">Juan Morales</div><div class="stats-player-club">Los Matreros</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:76%"></div></div><div class="stats-value">77</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Bautista Santamarina</div><div class="stats-player-club">Los Tilos</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:70%"></div></div><div class="stats-value">71</div></div>
+    <div class="stats-row"><div class="stats-rank">9</div><div class="stats-player"><div class="stats-player-name">Bautista Canzani</div><div class="stats-player-club">Alumni</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:67%"></div></div><div class="stats-value">68</div></div>
+    <div class="stats-row"><div class="stats-rank">10</div><div class="stats-player"><div class="stats-player-name">Gonzalo Costaguta</div><div class="stats-player-club">Champagnat</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:56%"></div></div><div class="stats-value">57</div></div>
+    <div class="stats-row"><div class="stats-rank">11</div><div class="stats-player"><div class="stats-player-name">Juan Landó</div><div class="stats-player-club">Belgrano Athletic</div></div><div class="stats-bar-bg"><div class="stats-bar" style="width:54%"></div></div><div class="stats-value">55</div></div>
+  </div>
+</section>
+
+<hr class="div">
+<section id="trymans" class="fade-in">
+  <div class="section-title">Tabla de Trymans</div>
+  <div class="stats-table">
+    <div class="stats-header">🏉 Tries anotados · Fuente: Rugby Champagne</div>
+    <div class="stats-row"><div class="stats-rank r1">1</div><div class="stats-player"><div class="stats-player-name">Timoteo Silva</div><div class="stats-player-club">San Isidro Club</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:100%"></div></div><div class="stats-value">8</div></div>
+    <div class="stats-row"><div class="stats-rank r2">2</div><div class="stats-player"><div class="stats-player-name">Juan M. Torres Obeid</div><div class="stats-player-club">CASI</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:87%"></div></div><div class="stats-value">7</div></div>
+    <div class="stats-row"><div class="stats-rank r2">2</div><div class="stats-player"><div class="stats-player-name">Agustín Capurro</div><div class="stats-player-club">Hindú Club</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:87%"></div></div><div class="stats-value">7</div></div>
+    <div class="stats-row"><div class="stats-rank r2">2</div><div class="stats-player"><div class="stats-player-name">Beltrán Landívar</div><div class="stats-player-club">Regatas Bella Vista</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:87%"></div></div><div class="stats-value">7</div></div>
+    <div class="stats-row"><div class="stats-rank r3">5</div><div class="stats-player"><div class="stats-player-name">Juan Cruz Bertero</div><div class="stats-player-club">Atlético del Rosario</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:75%"></div></div><div class="stats-value">6</div></div>
+    <div class="stats-row"><div class="stats-rank r3">5</div><div class="stats-player"><div class="stats-player-name">Beltrán Salese</div><div class="stats-player-club">Newman</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:75%"></div></div><div class="stats-value">6</div></div>
+    <div class="stats-row"><div class="stats-rank">7</div><div class="stats-player"><div class="stats-player-name">Pedro Castro Nevares</div><div class="stats-player-club">CUBA</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:62%"></div></div><div class="stats-value">5</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Nicolás Casals</div><div class="stats-player-club">Atlético del Rosario</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Tomás Bivort</div><div class="stats-player-club">Alumni</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Nicolás Amaya</div><div class="stats-player-club">Hindú Club</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Ramón Fuentes</div><div class="stats-player-club">Alumni</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Fermín Ormaechea</div><div class="stats-player-club">Hindú Club</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Justo Ortiz Basualdo</div><div class="stats-player-club">Newman</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Tomás Phelan</div><div class="stats-player-club">CASI</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+    <div class="stats-row"><div class="stats-rank">8</div><div class="stats-player"><div class="stats-player-name">Lisandro Rodríguez</div><div class="stats-player-club">Hindú Club</div></div><div class="stats-bar-bg"><div class="stats-bar tries" style="width:50%"></div></div><div class="stats-value">4</div></div>
+  </div>
+</section>
+
+<hr class="div">
+<section id="clubes" class="fade-in">
+  <div class="section-title">Los 14 Clubes</div>
+  <div class="clubes-grid">
+    <div class="club-card"><div class="club-avatar">ALU</div><div><div class="club-card-name">Alumni</div><div class="club-card-loc">Manuel Alberti</div></div></div>
+    <div class="club-card nuevo"><div class="club-avatar">ARO</div><div><div class="club-card-name">Atl. del Rosario</div><div class="club-card-loc">Rosario, Santa Fe</div><span class="nuevo-tag">Ascendido 2026</span></div></div>
+    <div class="club-card"><div class="club-avatar">BEL</div><div><div class="club-card-name">Belgrano AC</div><div class="club-card-loc">Virrey del Pino</div></div></div>
+    <div class="club-card"><div class="club-avatar">BUE</div><div><div class="club-card-name">Buenos Aires C&RC</div><div class="club-card-loc">Victoria</div></div></div>
+    <div class="club-card"><div class="club-avatar">CAS</div><div><div class="club-card-name">CASI</div><div class="club-card-loc">San Isidro · 33 títulos</div></div></div>
+    <div class="club-card nuevo"><div class="club-avatar">CHA</div><div><div class="club-card-name">Champagnat</div><div class="club-card-loc">Pilar</div><span class="nuevo-tag">Ascendido 2026</span></div></div>
+    <div class="club-card"><div class="club-avatar">CUB</div><div><div class="club-card-name">CUBA</div><div class="club-card-loc">Villa de Mayo</div></div></div>
+    <div class="club-card"><div class="club-avatar">HIN</div><div><div class="club-card-name">Hindú Club</div><div class="club-card-loc">Don Torcuato</div></div></div>
+    <div class="club-card"><div class="club-avatar">LAP</div><div><div class="club-card-name">La Plata RC</div><div class="club-card-loc">Manuel Gonnet</div></div></div>
+    <div class="club-card nuevo"><div class="club-avatar">MAT</div><div><div class="club-card-name">Los Matreros</div><div class="club-card-loc">Morón</div><span class="nuevo-tag">Ascendido 2026</span></div></div>
+    <div class="club-card"><div class="club-avatar">NEW</div><div><div class="club-card-name">Newman 🏆</div><div class="club-card-loc">Benavídez · Campeón 2025</div></div></div>
+    <div class="club-card"><div class="club-avatar">REG</div><div><div class="club-card-name">Regatas BV</div><div class="club-card-loc">Bella Vista</div></div></div>
+    <div class="club-card"><div class="club-avatar">SIC</div><div><div class="club-card-name">San Isidro Club</div><div class="club-card-loc">Boulogne sur Mer</div></div></div>
+    <div class="club-card"><div class="club-avatar">TIL</div><div><div class="club-card-name">Los Tilos</div><div class="club-card-loc">Tolosa, La Plata</div></div></div>
+  </div>
+</section>
+
+<hr class="div">
+<section id="urba" class="fade-in">
+  <div class="section-title">La URBA</div>
+  <div class="urba-grid">
+    <div class="info-card">
+      <h3>¿Qué es la URBA?</h3>
+      <p>La Unión de Rugby de Buenos Aires (URBA) rige el rugby de clubes en la Ciudad y Provincia de Buenos Aires, más Atlético del Rosario (Santa Fe). Fue fundada en diciembre de 1995 en la reestructuración del rugby argentino.</p>
+      <p>Organiza el torneo más antiguo de América, disputado sin interrupciones desde 1899. El sistema incluye Top 14, Primera A, B y C, Segunda, Tercera y Desarrollo, con 91 clubes afiliados.</p>
+      <p>El campeón del Top 14 accede al Torneo Nacional de Clubes junto al campeón del Interior A.</p>
+    </div>
+    <div class="info-card">
+      <h3>Datos del torneo 2026</h3>
+      <div class="info-row"><span class="info-label">Edición</span><span class="info-value">127ª (desde 1899)</span></div>
+      <div class="info-row"><span class="info-label">Nombre</span><span class="info-value">Copa Macro · Zurich</span></div>
+      <div class="info-row"><span class="info-label">Formato</span><span class="info-value">14 equipos · todos vs todos x2</span></div>
+      <div class="info-row"><span class="info-label">Inicio</span><span class="info-value">14 de marzo 2026</span></div>
+      <div class="info-row"><span class="info-label">Cuartos de final</span><span class="info-value">24 de septiembre 2026</span></div>
+      <div class="info-row"><span class="info-label">Semifinales</span><span class="info-value">31 de octubre 2026</span></div>
+      <div class="info-row"><span class="info-label">Final</span><span class="info-value">7 de noviembre 2026</span></div>
+      <div class="info-row"><span class="info-label">Transmisión</span><span class="info-value">ESPN / Disney+ Plan Premium</span></div>
+      <div class="info-row"><span class="info-label">Campeón vigente</span><span class="info-value">Newman (2025)</span></div>
+      <div class="info-row"><span class="info-label">Más títulos histórico</span><span class="info-value">CASI (33 títulos)</span></div>
+      <div class="info-row"><span class="info-label">Sitio oficial</span><span class="info-value">urba.org.ar</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">URBA <span>Top 14</span></div>
+  <p>Copa Macro · Presentada por Zurich · Temporada 2026</p>
+  <p style="margin-top:.5rem">Sitio no oficial · Datos al 9 de mayo de 2026 (Fecha 7)</p>
+  <p>Fuentes: urba.org.ar · ESPN Deportes · La Nación · Rugby Champagne</p>
+</footer>
+
+<script>
+  // ── URL de tu API en Railway ──────────────────────────────────────────────
+  const API_URL = "https://urba-top14-api-production-376e.up.railway.app";
+
+  // ── Mapa de nombres: cómo aparecen en la tarjeta HTML → como vienen de la API
+  const NOMBRE_MAP = {
+    "la plata": "La Plata",
+    "atl. del rosario": "Atl. del Rosario",
+    "hinduclub": "Hindú", "hindú": "Hindú", "hindu": "Hindú",
+    "los tilos": "Los Tilos",
+    "champagnat": "Champagnat",
+    "casi": "CASI",
+    "alumni": "Alumni",
+    "cuba": "CUBA",
+    "newman": "Newman",
+    "buenos aires c&rc": "Buenos Aires C&RC", "buenos aires": "Buenos Aires C&RC",
+    "sic": "SIC",
+    "belgrano athletic": "Belgrano Athletic", "belgrano": "Belgrano Athletic",
+    "los matreros": "Los Matreros",
+    "regatas bella vista": "Regatas BV", "regatas bv": "Regatas BV",
+  };
+
+  function normalizarNombre(nombre) {
+    return NOMBRE_MAP[nombre.toLowerCase().trim()] || nombre.trim();
+  }
+
+  // ── Carga los partidos de la API y actualiza la web ───────────────────────
+  async function cargarDesdeAPI() {
+    const indicator = document.getElementById('api-status');
+    try {
+      const resp = await fetch(`${API_URL}/api/partidos`, { mode: 'cors' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      let actualizados = 0;
+
+      data.partidos.forEach(partido => {
+        if (!partido.jugado || !partido.resultado) return;
+
+        const localNorm = normalizarNombre(partido.local);
+        const visitNorm = normalizarNombre(partido.visitante);
+        const rl = partido.resultado.local;
+        const rv = partido.resultado.visitante;
+
+        // Busca la tarjeta correcta en el HTML
+        document.querySelectorAll('.partido-card').forEach(card => {
+          const equipos = card.querySelectorAll('.partido-equipo');
+          if (equipos.length < 2) return;
+
+          const localCard = normalizarNombre(equipos[0].textContent);
+          const visitCard = normalizarNombre(equipos[1].textContent);
+
+          if (localCard === localNorm && visitCard === visitNorm) {
+            // Reemplaza el score-pend o actualiza el marcador existente
+            const scorePend = card.querySelector('.score-pend');
+            const scoreBox = card.querySelector('.partido-score');
+
+            if (scorePend) {
+              // Era pendiente, le ponemos el marcador real
+              scorePend.outerHTML = `<div class="partido-score">
+                <span>${rl}</span><span class="sep">–</span><span>${rv}</span>
+              </div>`;
+              card.classList.remove('pendiente');
+              card.querySelector('.partido-label')?.classList.remove('pend');
+              card.querySelector('.partido-label')?.classList.add('jugado-label');
+            } else if (scoreBox) {
+              // Ya tenía marcador, lo actualizamos igual
+              scoreBox.innerHTML = `<span>${rl}</span><span class="sep">–</span><span>${rv}</span>`;
+            }
+
+            // Marca al ganador en dorado
+            if (rl > rv) {
+              equipos[0].classList.add('ganador');
+              equipos[1].classList.remove('ganador');
+            } else if (rv > rl) {
+              equipos[1].classList.add('ganador');
+              equipos[0].classList.remove('ganador');
+            }
+
+            actualizados++;
+          }
+        });
+      });
+
+      if (indicator) {
+        indicator.textContent = `✓ API conectada · ${actualizados} partidos actualizados`;
+        indicator.style.color = '#5cb85c';
+      }
+      console.log(`API OK: ${actualizados} partidos actualizados`);
+
+    } catch (err) {
+      console.warn("API no disponible, usando datos estáticos:", err.message);
+      if (indicator) {
+        indicator.textContent = `⚠ Sin conexión a la API · Datos estáticos`;
+        indicator.style.color = '#e8a838';
+      }
+    }
+  }
+
+  // ── Tabs de fechas ────────────────────────────────────────────────────────
+  function showTab(n) {
+    document.querySelectorAll('.fecha-panel').forEach((p,i) => p.classList.toggle('active', i===n));
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===n));
+  }
+
+  // ── Fade-in al scroll ─────────────────────────────────────────────────────
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting) e.target.classList.add('visible');
+  }), {threshold:.07});
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // ── Al cargar la página, conecta con la API ───────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    cargarDesdeAPI();
+    // Refresca cada 5 minutos automáticamente
+    setInterval(cargarDesdeAPI, 5 * 60 * 1000);
+  });
+</script>
+</body>
+</html>
