@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import httpx
 from bs4 import BeautifulSoup
 import json
@@ -8,8 +10,6 @@ import asyncio
 from datetime import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 app = FastAPI(title="URBA Top 14 API")
 
 app.add_middleware(
@@ -222,9 +222,13 @@ async def scrape_espn():
 
 # ─── ENDPOINTS ───────────────────────────────────────────────────────────────
 
-@app.get("/")
+@app.get("/api/status")
 def root():
     return {"status": "ok", "mensaje": "URBA Top 14 API funcionando"}
+
+@app.get("/")
+def serve_index():
+    return FileResponse("index.html")
 
 @app.get("/api/partidos")
 async def get_partidos():
@@ -302,10 +306,6 @@ async def get_posiciones():
 async def forzar_actualizacion():
     await scrape_espn()
     return {"status": "ok", "mensaje": "Actualización completada"}
-
-@app.get("/", response_class=FileResponse)
-def serve_index():
-    return FileResponse("index.html")
 
 # ─── STARTUP ─────────────────────────────────────────────────────────────────
 
