@@ -20,7 +20,7 @@ app.add_middleware(
 # Archivo local donde guardamos los datos scrapeados
 DATA_FILE = "data.json"
 
-# ─── Datos base del fixture (ya los tenemos hardcodeados de las imágenes) ───
+# ─── Datos base del fixture ───
 FIXTURE = [
     # FECHA 1 - 14 Mar
     {"fecha": 1, "fecha_str": "14 Mar 2026", "local": "La Plata", "visitante": "Atl. del Rosario"},
@@ -61,7 +61,7 @@ FIXTURE = [
     {"fecha": 5, "fecha_str": "18 Abr 2026", "local": "Hindú", "visitante": "Belgrano Athletic"},
     {"fecha": 5, "fecha_str": "18 Abr 2026", "local": "Alumni", "visitante": "Newman"},
     {"fecha": 5, "fecha_str": "18 Abr 2026", "local": "SIC", "visitante": "Champagnat"},
-    {"fecha": 5, "fecha_str": "18 Abr 2026", "local": "Los Matreros", "visitante": "Los Tilos"},
+    {"fecha": 5, "fecha_str": "18 Abr 2026", "local": "Los Tilos", "visitante": "Los Matreros"},
     # FECHA 6 - 25 Abr
     {"fecha": 6, "fecha_str": "25 Abr 2026", "local": "Newman", "visitante": "Champagnat"},
     {"fecha": 6, "fecha_str": "25 Abr 2026", "local": "SIC", "visitante": "Hindú"},
@@ -87,7 +87,6 @@ FIXTURE = [
     {"fecha": 8, "fecha_str": "16 May 2026", "local": "Champagnat", "visitante": "Los Matreros"},
 ]
 
-# Resultados conocidos hardcodeados (fechas 1-7)
 RESULTADOS_CONOCIDOS = {
     "Hindú_Los Tilos_1": {"local": 52, "visitante": 18},
     "Champagnat_CASI_1": {"local": 16, "visitante": 40},
@@ -134,6 +133,16 @@ RESULTADOS_CONOCIDOS = {
     "Los Matreros_CASI_7": {"local": 24, "visitante": 48},
 }
 
+# Diccionario para normalizar los nombres que vienen de ESPN a los de tu FIXTURE
+MAPEO_EQUIPOS = {
+    "CASI": "CASI", "Hindu": "Hindú", "Hindú": "Hindú", "SIC": "SIC", "Newman": "Newman", 
+    "Alumni": "Alumni", "Regatas Bella Vista": "Regatas BV", "Regatas BV": "Regatas BV",
+    "Atletico del Rosario": "Atl. del Rosario", "Atl. del Rosario": "Atl. del Rosario",
+    "CUBA": "CUBA", "Los Matreros": "Los Matreros", "Champagnat": "Champagnat",
+    "Los Tilos": "Los Tilos", "Belgrano": "Belgrano Athletic", "Belgrano Athletic": "Belgrano Athletic",
+    "Buenos Aires C&RC": "Buenos Aires C&RC", "Buenos Aires": "Buenos Aires C&RC", "La Plata": "La Plata"
+}
+
 def load_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
@@ -148,50 +157,65 @@ def get_partido_key(local, visitante, fecha):
     return f"{local}_{visitante}_{fecha}"
 
 async def scrape_espn():
-    """Intenta scrapear ESPN para obtener resultados del URBA Top 14 2026"""
-    print(f"[{datetime.now()}] Iniciando scraping...")
+    print(f"[{datetime.now()}] Iniciando scraping de ESPN Rugby...")
     data = load_data()
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "es-AR,es;q=0.9",
-        "Referer": "https://www.google.com/",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    # Fechas de cada jornada para construir la URL
-    fechas_espn = [
-        "20260314", "20260321", "20260328", "20260411", "20260418",
-        "20260425", "20260509", "20260516", "20260523", "20260530",
-    ]
+    
+    # Mapeamos las fechas a su número correspondiente en tu torneo
+    fechas_map = {
+        "20260314": 1, "20260321": 2, "20260328": 3, "20260411": 4, 
+        "20260418": 5, "20260425": 6, "20260509": 7, "20260516": 8
+    }
+    
     resultados_nuevos = 0
-    try:
-        async with httpx.AsyncClient(timeout=15, follow_redirects=True) as client:
-            for fecha_str in fechas_espn:
-                url = f"https://www.espn.com.ar/rugby/resultados/_/liga/289279/fecha/{fecha_str}"
-                try:
-                    resp = await client.get(url, headers=headers)
-                    if resp.status_code == 200:
-                        soup = BeautifulSoup(resp.text, "html.parser")
-                        # ESPN estructura los scores en .ScoreboardScoreCell
-                        score_cells = soup.select(".ScoreboardScoreCell__Score")
-                        team_cells = soup.select(".ScoreCell__TeamName")
-                        if score_cells and team_cells:
-                            print(f"  ESPN fecha {fecha_str}: {len(score_cells)} scores encontrados")
-                            resultados_nuevos += len(score_cells)
-                except Exception as e:
-                    print(f"  ESPN fecha {fecha_str}: error - {e}")
-                await asyncio.sleep(1)
-    except Exception as e:
-        print(f"Error en scraping ESPN: {e}")
 
-    # Siempre cargar los resultados conocidos hardcodeados
+    # Cargar primero todo lo hardcodeado conocido por seguridad
     for key, resultado in RESULTADOS_CONOCIDOS.items():
         if key not in data["partidos"]:
             data["partidos"][key] = resultado
-            resultados_nuevos += 1
+
+    async with httpx.AsyncClient(timeout=15, follow_redirects=True) as client:
+        for fecha_str, num_fecha in fechas_map.items():
+            # Evitamos buscar fechas futuras si el raspador corre antes de tiempo
+            if num_fecha > 8:
+                continue
+                
+            url = f"https://www.espn.com.ar/rugby/resultados/_/liga/289279/fecha/{fecha_str}"
+            try:
+                resp = await client.get(url, headers=headers)
+                if resp.status_code == 200:
+                    soup = BeautifulSoup(resp.text, "html.parser")
+                    
+                    # Estructura real de los bloques de partidos de ESPN Rugby
+                    eventos = soup.select(".custom-scoreboard, .scoreboard")
+                    for evento in eventos:
+                        teams = [t.get_text().strip() for t in evento.select(".team-name, .ScoreCell__TeamName")]
+                        scores = [s.get_text().strip() for s in evento.select(".score, .ScoreboardScoreCell__Score")]
+                        
+                        if len(teams) >= 2 and len(scores) >= 2:
+                            # Normalizamos los nombres de los equipos según tu MAPEO_EQUIPOS
+                            loc_norm = MAPEO_EQUIPOS.get(teams[0], teams[0])
+                            vis_norm = MAPEO_EQUIPOS.get(teams[1], teams[1])
+                            
+                            # Validamos si los scores son numéricos válidos
+                            if scores[0].isdigit() and scores[1].isdigit():
+                                key = get_partido_key(loc_norm, vis_norm, num_fecha)
+                                
+                                # Guardamos el formato exacto {"local": X, "visitante": Y}
+                                data["partidos"][key] = {
+                                    "local": int(scores[0]),
+                                    "visitante": int(scores[1])
+                                }
+                                resultados_nuevos += 1
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                print(f"  Error raspando fecha {fecha_str}: {e}")
 
     data["ultima_actualizacion"] = datetime.now().isoformat()
     save_data(data)
-    print(f"[{datetime.now()}] Scraping completado. {resultados_nuevos} resultados procesados.")
+    print(f"[{datetime.now()}] Scraping completado con éxito. Base de datos actualizada.")
     return data
 
 # ─── ENDPOINTS ───────────────────────────────────────────────────────────────
@@ -202,7 +226,6 @@ def root():
 
 @app.get("/api/partidos")
 async def get_partidos():
-    """Devuelve todos los partidos con sus resultados"""
     data = load_data()
     partidos = []
     for p in FIXTURE:
@@ -220,7 +243,6 @@ async def get_partidos():
 
 @app.get("/api/partidos/fecha/{num_fecha}")
 async def get_partidos_fecha(num_fecha: int):
-    """Devuelve los partidos de una fecha específica"""
     data = load_data()
     partidos = []
     for p in FIXTURE:
@@ -236,7 +258,6 @@ async def get_partidos_fecha(num_fecha: int):
 
 @app.get("/api/posiciones")
 async def get_posiciones():
-    """Calcula la tabla de posiciones en base a los resultados"""
     data = load_data()
     equipos = {}
     nombres = [
@@ -277,7 +298,6 @@ async def get_posiciones():
 
 @app.post("/api/actualizar")
 async def forzar_actualizacion():
-    """Fuerza una actualización del scraper"""
     await scrape_espn()
     return {"status": "ok", "mensaje": "Actualización completada"}
 
@@ -285,9 +305,7 @@ async def forzar_actualizacion():
 
 @app.on_event("startup")
 async def startup():
-    # Cargar datos conocidos al arrancar
     await scrape_espn()
-    # Programar scraping cada hora
     scheduler = AsyncIOScheduler()
     scheduler.add_job(scrape_espn, "interval", hours=1)
     scheduler.start()
