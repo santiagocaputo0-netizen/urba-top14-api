@@ -8,6 +8,8 @@ import asyncio
 from datetime import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 app = FastAPI(title="URBA Top 14 API")
 
 app.add_middleware(
