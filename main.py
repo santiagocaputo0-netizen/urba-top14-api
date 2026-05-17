@@ -133,6 +133,14 @@ RESULTADOS_CONOCIDOS = {
     "Hindú_Newman_7": {"local": 25, "visitante": 26},
     "Champagnat_Alumni_7": {"local": 7, "visitante": 76},
     "Los Matreros_CASI_7": {"local": 24, "visitante": 48},
+    # FECHA 8 - 16 May 2026
+    "Champagnat_Los Matreros_8": {"local": 9, "visitante": 30},
+    "Alumni_Hindú_8": {"local": 17, "visitante": 23},
+    "Newman_La Plata_8": {"local": 16, "visitante": 15},
+    "SIC_Regatas BV_8": {"local": 39, "visitante": 21},
+    "Belgrano Athletic_Atl. del Rosario_8": {"local": 27, "visitante": 21},
+    "Buenos Aires C&RC_Los Tilos_8": {"local": 22, "visitante": 48},
+    "CUBA_CASI_8": {"local": 37, "visitante": 38},
 }
 
 # Diccionario para normalizar los nombres que vienen de ESPN a los de tu FIXTURE
